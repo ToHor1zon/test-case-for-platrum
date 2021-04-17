@@ -1,5 +1,5 @@
 <template>
-  <div class="container border border-secondary justify-content-center col-auto col-md-6">
+  <div class="container border border-secondary justify-content-center col-auto mx-2 col-lg-8 mx-lg-auto">
     <div class="row table-header">
       <div class="col p-2 pl-3 font-weight-bold">ФИО</div>
       <div class="col p-2 pl-3 font-weight-bold">Телефон</div>

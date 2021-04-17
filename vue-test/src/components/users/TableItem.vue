@@ -2,10 +2,22 @@
   <div>
     <div
       @click="toggleShowChildren"
-      class="border border-secondary border-left-0 border-right-0 border-bottom-0 row user-parent__wrapper"
+      :class="[
+        'row',
+        'border',
+        'border-secondary',
+        'border-left-0',
+        'border-right-0',
+        'border-bottom-0',
+        'user-parent__wrapper',
+        user.childrenUsers.length ? 'user-parent__wrapper--parent' : '',
+      ]"
     >
       <div class="text-capitalize col p-2 pl-3">
-        <span ref="userParentArrow" class="user-parent-arrow">{{ user.childrenUsers.length ? '▼' : '' }}</span> {{ user.name }}
+        <span ref="userParentArrow" class="user-parent-arrow">{{
+          user.childrenUsers.length ? '▼' : ''
+        }}</span>
+        {{ user.name }}
       </div>
       <div class="col p-2 pl-3">{{ user.phone }}</div>
     </div>
@@ -44,18 +56,19 @@ export default {
     toggleShowChildren() {
       this.isDisplayed = !this.isDisplayed;
       this.$refs.userParentArrow.classList.toggle('user-parent-arrow--rotated');
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style lang="scss">
-
-
 .user-parent {
   &__wrapper:hover {
+    background-color: #efeffb;
+  }
+
+  &__wrapper--parent:hover {
     cursor: pointer;
-    background-color: #EFEFFB;
   }
 
   &-arrow {
@@ -66,7 +79,7 @@ export default {
     transform: rotate(0deg);
 
     &--rotated {
-      transform: rotate(-180deg);;
+      transform: rotate(-180deg);
     }
   }
 }

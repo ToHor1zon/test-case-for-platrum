@@ -6,7 +6,7 @@
       >
     </div>
 
-    <Table :users="users" />
+    <Table :users="users" v-if="Object.keys(users).length" />
     <Modal :parentOptions="parentOptions" @saveUser="saveUserToLocalStorage" />
   </div>
 </template>
@@ -52,6 +52,10 @@ export default {
       const updatedUsers = JSON.stringify(currentUsers);
 
       localStorage.setItem('users', updatedUsers);
+
+      this.usersFromLocalStorage = localStorage.getItem('users');
+  },
+    getUsersFromLocalStorage() {
       this.usersFromLocalStorage = localStorage.getItem('users');
     },
   },
