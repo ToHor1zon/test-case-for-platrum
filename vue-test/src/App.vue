@@ -1,12 +1,20 @@
 <template>
   <div id="App">
     <div class="text-center my-4">
-      <b-button v-b-modal.new-user-modal class="m-auto"
-        >Добавить работника</b-button
+      <b-button
+        v-b-modal.new-user-modal
+        class="m-auto"
       >
+        Добавить работника
+      </b-button>
     </div>
 
-    <Table :users="users" v-if="Object.keys(users).length" />
+    <Table
+      :users="sortedUsers"
+      @sortUsers="sortUsers"
+      :isAscUsersOrder="isAscUsersOrder"
+      v-if="users.length"
+    />
     <Modal :parentOptions="parentOptions" @saveUser="saveUserToLocalStorage" />
   </div>
 </template>
@@ -14,7 +22,8 @@
 <script>
 import Table from './components/users/Table';
 import Modal from './components/users/Modal';
-import { randomId } from './helpers/random';
+import { getRandomId } from './helpers/random';
+import { sortByName } from './helpers/sort';
 
 export default {
   name: 'App',
@@ -24,40 +33,51 @@ export default {
   },
   data() {
     return {
-      usersFromLocalStorage: localStorage.getItem('users') || '{}',
+      users: [],
+      isAscUsersOrder: true,
     };
   },
+  mounted() {
+    const usersFromLocalStorage = this.getUsersFromLocalStorage();
+    this.users = JSON.parse(usersFromLocalStorage);
+  },
   computed: {
-    users() {
-      return JSON.parse(this.usersFromLocalStorage);
-    },
     parentOptions() {
-      return Object.entries(this.users).map(([id, user]) => ({
-        value: Number.parseInt(id),
-        text: user.name,
+      return this.users.map(({ id, name }) => ({
+        value: id,
+        text: name,
       }));
+    },
+    sortedUsers() {
+      return sortByName(this.users, this.isAscUsersOrder);
     },
   },
   methods: {
-    saveUserToLocalStorage(user) {
-      const newUserId = randomId();
-      const currentUsers = this.users;
-
-      if (user.parentId) {
-        currentUsers[user.parentId].childrenUsers.push(user);
+    saveUserToLocalStorage(newUser) {
+      const newUserId = getRandomId();
+      let updatedUsers;
+      newUser.id = newUserId;
+      
+      if (newUser.parentId) {
+        updatedUsers = this.users.map(item => {
+          item.childrenUsers = item.id === newUser.parentId ? [...item.childrenUsers, newUser] : item.childrenUsers;
+          return item;
+        })
       } else {
-        currentUsers[newUserId] = user;
+        updatedUsers = [...this.users, newUser];
       }
 
-      const updatedUsers = JSON.stringify(currentUsers);
+      const JsonUpdatedUsers = JSON.stringify(updatedUsers);
+      localStorage.setItem('users', JsonUpdatedUsers);
 
-      localStorage.setItem('users', updatedUsers);
-
-      this.usersFromLocalStorage = localStorage.getItem('users');
-  },
-    getUsersFromLocalStorage() {
       this.usersFromLocalStorage = localStorage.getItem('users');
     },
+    sortUsers(isAscOrder) {
+      this.isAscUsersOrder = isAscOrder;
+    },
+    getUsersFromLocalStorage() {
+      return localStorage.getItem('users') || '[]';
+    }
   },
 };
 </script>

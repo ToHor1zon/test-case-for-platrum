@@ -94,7 +94,7 @@ export default {
     },
     submitForm() {
       if (!this.formIsValid()) return;
-
+      
       this.$emit('saveUser', this.form);
       this.dropModal();
     },

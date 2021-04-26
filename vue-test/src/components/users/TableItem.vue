@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      @click="toggleShowChildren"
+      @click="openParentItem"
       :class="[
         'row',
         'border',
@@ -13,15 +13,13 @@
         user.childrenUsers.length ? 'user-parent__wrapper--parent' : '',
       ]"
     >
-      <div class="text-capitalize col p-2 pl-3">
-        <span ref="userParentArrow" class="user-parent-arrow">{{
-          user.childrenUsers.length ? '▼' : ''
-        }}</span>
+      <div v-if="user.childrenUsers.length" class="text-capitalize col p-2 pl-3">
+        <TableArrow :isUpArrow="true" :isActive="isOpenedParent" />
         {{ user.name }}
       </div>
       <div class="col p-2 pl-3">{{ user.phone }}</div>
     </div>
-    <template v-if="isDisplayed">
+    <template v-if="isOpenedParent">
       <div
         v-for="childUser in user.childrenUsers"
         class="border-top row"
@@ -39,8 +37,13 @@
 </template>
 
 <script>
+import TableArrow from '../Utils/TableArrow';
+
 export default {
   name: 'TableItem',
+  components: {
+    TableArrow,
+  },
   props: {
     user: {
       type: Object,
@@ -49,15 +52,14 @@ export default {
   },
   data() {
     return {
-      isDisplayed: false,
+      isOpenedParent: false
     };
   },
   methods: {
-    toggleShowChildren() {
-      this.isDisplayed = !this.isDisplayed;
-      this.$refs.userParentArrow.classList.toggle('user-parent-arrow--rotated');
+    openParentItem() {
+      this.isOpenedParent = !this.isOpenedParent;
     },
-  },
+  }
 };
 </script>
 
@@ -69,18 +71,6 @@ export default {
 
   &__wrapper--parent:hover {
     cursor: pointer;
-  }
-
-  &-arrow {
-    display: inline-block;
-    font-size: 12px;
-    transform-origin: 50% 47%;
-    transition: 0.4s linear;
-    transform: rotate(0deg);
-
-    &--rotated {
-      transform: rotate(-180deg);
-    }
   }
 }
 </style>
