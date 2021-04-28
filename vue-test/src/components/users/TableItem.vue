@@ -13,8 +13,8 @@
         user.childrenUsers.length ? 'user-parent__wrapper--parent' : '',
       ]"
     >
-      <div v-if="user.childrenUsers.length" class="text-capitalize col p-2 pl-3">
-        <TableArrow :isUpArrow="true" :isActive="isOpenedParent" />
+      <div class="text-capitalize col p-2 pl-3">
+        <TableArrow v-if="user.childrenUsers.length" :isUpArrow="true" :isActive="isOpenedParent" />
         {{ user.name }}
       </div>
       <div class="col p-2 pl-3">{{ user.phone }}</div>

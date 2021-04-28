@@ -38,8 +38,7 @@ export default {
     };
   },
   mounted() {
-    const usersFromLocalStorage = this.getUsersFromLocalStorage();
-    this.users = JSON.parse(usersFromLocalStorage);
+    this.updateUsersFromLocalStorage();
   },
   computed: {
     parentOptions() {
@@ -70,13 +69,14 @@ export default {
       const JsonUpdatedUsers = JSON.stringify(updatedUsers);
       localStorage.setItem('users', JsonUpdatedUsers);
 
-      this.usersFromLocalStorage = localStorage.getItem('users');
+      this.updateUsersFromLocalStorage();
     },
     sortUsers(isAscOrder) {
       this.isAscUsersOrder = isAscOrder;
     },
-    getUsersFromLocalStorage() {
-      return localStorage.getItem('users') || '[]';
+    updateUsersFromLocalStorage() {
+      const usersFromLocalStorage = localStorage.getItem('users') || '[]';
+      this.users = JSON.parse(usersFromLocalStorage); 
     }
   },
 };
